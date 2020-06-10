@@ -15,7 +15,12 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Auth::user()->events;
+        return response()->json([
+            'status_code' => 200,
+            'message' => 'Your Event list',
+            'data' => $events,
+        ]);
     }
 
     /**
@@ -50,7 +55,7 @@ class EventController extends Controller
             $event->adresse = $request->adresse;
             $event->zipCode = $request->zipCode;
             $event->city = $request->city;
-            $event->author_id = Auth::user()->id;
+            $event->user_id = Auth::user()->id;
             $event->save();
 
             return response()->json([

@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/delete_account', 'UserController@destroy');
     Route::post('/edit_account', 'UserController@edit_account');
 
+    Route::get('/my_events', 'EventController@index');
     Route::post('/create_event', 'EventController@store');
 });
 
