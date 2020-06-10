@@ -21,7 +21,8 @@ class CreateEventsTable extends Migration
             $table->string('zipCode');
             $table->string('city');
             $table->string('banner')->nullable();
-            $table->integer('auhtor_id');
+            $table->integer('author_id');
+            $table->timestamps();
         });
     }
 
