@@ -18,7 +18,9 @@ Route::post('/login', 'AuthController@login');
 Route::post('/register', 'AuthController@register');
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/info', 'AuthController@test');
+    Route::get('/account', 'UserController@profile');
+    Route::get('/delete_account', 'UserController@destroy');
+    Route::post('/edit_account', 'UserController@edit_account');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
