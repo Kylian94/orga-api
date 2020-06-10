@@ -25,6 +25,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/my_events', 'EventController@index');
     Route::post('/create_event', 'EventController@store');
+    Route::post('/edit_event/{id}', 'EventController@edit_event');
+    Route::post('/delete_event/{id}', 'EventController@destroy');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

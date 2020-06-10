@@ -88,21 +88,38 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function edit(Event $event)
+    public function edit_event(Request $request, $id)
     {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Event  $event
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Event $event)
-    {
-        //
+        try {
+            $event = Event::find($id);
+            //tdd($event);
+            if ($event->user_id == Auth::user()->id) {
+                $result = $event->update($request->all());
+                if ($result) {
+                    return response()->json([
+                        'message' => "event updated",
+                        'status_code' => 200
+                    ]);
+                } else {
+                    return response()->json([
+                        'message' => "event not updated",
+                        'status_code' => 400
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'message' => "not autorized",
+                    'status_code' => 422
+                ]);
+            }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Cannot edit event',
+                'error' => $error,
+            ]);
+        }
     }
 
     /**
@@ -111,8 +128,29 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Event $event)
+    public function destroy($id)
     {
-        //
+        try {
+            $event = Event::find($id);
+            //tdd($event);
+            if ($event->user_id == Auth::user()->id) {
+                $event->delete();
+                return response()->json([
+                    'message' => "event deleted",
+                    'status_code' => 200
+                ]);
+            } else {
+                return response()->json([
+                    'message' => "not autorized",
+                    'status_code' => 422
+                ]);
+            }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Cannot delete event',
+                'error' => $error,
+            ]);
+        }
     }
 }
