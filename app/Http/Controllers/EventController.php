@@ -16,10 +16,17 @@ class EventController extends Controller
     public function index()
     {
         $events = Auth::user()->events;
+
+        foreach ($events as $event) {
+            $listes = $event->listes;
+        }
+
         return response()->json([
             'status_code' => 200,
             'message' => 'Your Event list',
-            'data' => $events,
+            'events' => $events,
+
+
         ]);
     }
 
@@ -77,9 +84,25 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function show(Event $event)
+    public function show($id)
     {
-        //
+        try {
+            $event = Event::find($id);
+            $listes = $event->listes;
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Your list',
+                'event' => $event,
+
+
+            ]);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Error view event',
+                'error' => $error,
+            ]);
+        }
     }
 
     /**

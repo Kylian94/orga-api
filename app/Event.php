@@ -14,4 +14,8 @@ class Event extends Model
     {
         return $this->belongsTo('App\Post');
     }
+    public function listes()
+    {
+        return $this->hasMany('App\Liste');
+    }
 }
