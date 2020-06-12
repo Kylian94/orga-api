@@ -20,6 +20,9 @@ class EventController extends Controller
         foreach ($events as $event) {
             $listes = $event->listes;
         }
+        foreach ($listes as $liste) {
+            $items = $liste->items;
+        }
 
         return response()->json([
             'status_code' => 200,
@@ -51,6 +54,7 @@ class EventController extends Controller
         try {
             $request->validate([
                 'title' => 'required',
+                'date' => 'required',
                 'adresse' => 'required',
                 'zipCode' => 'required',
                 'city' => 'required'
@@ -59,6 +63,7 @@ class EventController extends Controller
             $event = new Event;
             $event->title = $request->title;
             $event->isPrivate = $request->isPrivate;
+            $event->date = $request->date;
             $event->adresse = $request->adresse;
             $event->zipCode = $request->zipCode;
             $event->city = $request->city;
@@ -89,6 +94,9 @@ class EventController extends Controller
         try {
             $event = Event::find($id);
             $listes = $event->listes;
+            foreach ($listes as $liste) {
+                $items = $liste->items;
+            }
             return response()->json([
                 'status_code' => 200,
                 'message' => 'Your list',
@@ -157,7 +165,19 @@ class EventController extends Controller
             $event = Event::find($id);
             //tdd($event);
             if ($event->user_id == Auth::user()->id) {
+
+                $listes = $event->listes;
+
+                foreach ($listes as $liste) {
+                    //dd($liste->items);
+                    $items = $liste->items;
+                    foreach ($items as $item) {
+                        $item->delete();
+                    }
+                    $liste->delete();
+                }
                 $event->delete();
+
                 return response()->json([
                     'message' => "event deleted",
                     'status_code' => 200

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'title', 'isPrivate', 'adresse', 'zipCode', 'city', 'banner',
+        'title', 'isPrivate', 'adresse', 'zipCode', 'city', 'banner', 'date',
     ];
 
     public function post()

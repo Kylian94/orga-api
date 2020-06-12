@@ -17,9 +17,11 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('title');
             $table->boolean('isPrivate')->default(0);
+            $table->date('date');
             $table->string('adresse');
             $table->string('zipCode');
             $table->string('city');
+
             $table->string('banner')->nullable();
             $table->integer('user_id');
             $table->timestamps();
