@@ -33,6 +33,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/{id}/create_liste', 'ListeController@store');
     Route::post('/edit_liste/{id}', 'ListeController@edit_liste');
     Route::post('/delete_liste/{id}', 'ListeController@destroy');
+
+    Route::get('/items/{id}', 'ItemController@show');
+    Route::post('/{id}/create_item', 'ItemController@store');
+    Route::post('/edit_item/{id}', 'ItemController@edit_item');
+    Route::post('/delete_item/{id}', 'ItemController@destroy');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Event;
+use App\Item;
 use App\Liste;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ListeController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,9 @@ class ListeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    { }
+    {
+        //
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -40,15 +42,18 @@ class ListeController extends Controller
                 'title' => 'required',
             ]);
 
-            $liste = new Liste;
-            $liste->title = $request->title;
-            $liste->event_id = $id;
-            $liste->save();
+            $item = new Item;
+            $item->title = $request->title;
+            $item->liste_id = $id;
+            $item->author_id = Auth::user()->id;
+            $item->save();
+            $user = Auth::user();
+            $user->items()->attach($item->id);
 
             return response()->json([
                 'status_code' => 200,
-                'event' => Event::find($id),
-                'liste' => $liste,
+                'liste' => Liste::find($id),
+                'item' => $item,
                 'message' => 'success'
             ]);
         } catch (Exception $error) {
@@ -63,78 +68,33 @@ class ListeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Liste  $liste
+     * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Item $item)
     {
-        try {
-
-            $liste = Liste::find($id);
-            $items = $liste->items;
-            foreach ($items as $item) {
-                $users =  $item->users;
-            }
-            return response()->json([
-                'status_code' => 200,
-                'message' => 'success',
-                'liste' => $liste,
-
-
-            ]);
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 500,
-                'message' => 'Error create liste',
-                'error' => $error,
-            ]);
-        }
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Liste  $liste
+     * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function edit_liste(Request $request, $id)
+    public function edit(Item $item)
     {
-        try {
-
-            $liste = Liste::find($id);
-            $user = Auth::user();
-            $event = $liste->event;
-            if ($user->id == $event->user_id) {
-                $liste->update($request->all());
-                return response()->json([
-                    'status_code' => 200,
-                    'message' => 'success',
-                    'liste' => $liste,
-                ]);
-            } else {
-                return response()->json([
-                    'status_code' => 422,
-                    'message' => 'not autorized',
-
-                ]);
-            }
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 500,
-                'message' => 'Error create liste',
-                'error' => $error,
-            ]);
-        }
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Liste  $liste
+     * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Liste $liste)
+    public function update(Request $request, Item $item)
     {
         //
     }
@@ -142,21 +102,21 @@ class ListeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Liste  $liste
+     * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $liste = Liste::find($id);
+        $item = Item::find($id);
         $user = Auth::user();
-        $event = $liste->event;
-        if ($user->id == $event->user_id) {
-            $result = $liste->delete();
+        $item->users()->detach();
+        if ($user->id == $item->author_id) {
+            $result = $item->delete();
             if ($result) {
                 return response()->json([
                     'status_code' => 200,
-                    'message' => 'success',
-                    'liste' => $liste,
+                    'message' => 'success delete',
+                    'item' => $item,
                 ]);
             } else {
                 return response()->json([

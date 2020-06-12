@@ -13,4 +13,9 @@ class Liste extends Model
     protected $fillable = [
         'title',
     ];
+
+    public function items()
+    {
+        return $this->hasMany('App\Item');
+    }
 }
