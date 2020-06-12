@@ -38,6 +38,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/{id}/create_item', 'ItemController@store');
     Route::post('/edit_item/{id}', 'ItemController@edit_item');
     Route::post('/delete_item/{id}', 'ItemController@destroy');
+
+
+    Route::get('/logout', 'UserController@logout');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

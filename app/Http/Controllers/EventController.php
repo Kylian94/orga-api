@@ -18,6 +18,7 @@ class EventController extends Controller
         $events = Auth::user()->events;
 
         foreach ($events as $event) {
+            $user = $event->user;
             $listes = $event->listes;
         }
         foreach ($listes as $liste) {
@@ -28,6 +29,7 @@ class EventController extends Controller
             'status_code' => 200,
             'message' => 'Your Event list',
             'events' => $events,
+
 
 
         ]);
@@ -93,6 +95,7 @@ class EventController extends Controller
     {
         try {
             $event = Event::find($id);
+            $user = $event->user;
             $listes = $event->listes;
             foreach ($listes as $liste) {
                 $items = $liste->items;
@@ -173,6 +176,7 @@ class EventController extends Controller
                     $items = $liste->items;
                     foreach ($items as $item) {
                         $item->delete();
+                        $item->users()->detach();
                     }
                     $liste->delete();
                 }

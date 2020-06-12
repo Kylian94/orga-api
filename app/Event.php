@@ -10,9 +10,9 @@ class Event extends Model
         'title', 'isPrivate', 'adresse', 'zipCode', 'city', 'banner', 'date',
     ];
 
-    public function post()
+    public function user()
     {
-        return $this->belongsTo('App\Post');
+        return $this->belongsTo('App\User');
     }
     public function listes()
     {
