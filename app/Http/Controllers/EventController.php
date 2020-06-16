@@ -18,12 +18,14 @@ class EventController extends Controller
         $events = Auth::user()->events;
 
         foreach ($events as $event) {
-            $user = $event->user;
+            $author = $event->user;
+            $members = $event->members;
             $listes = $event->listes;
         }
         foreach ($listes as $liste) {
             $items = $liste->items;
         }
+
 
         return response()->json([
             'status_code' => 200,
@@ -96,7 +98,9 @@ class EventController extends Controller
         try {
             $event = Event::find($id);
             $user = $event->user;
+            $members = $event->members;
             $listes = $event->listes;
+
             foreach ($listes as $liste) {
                 $items = $liste->items;
             }
