@@ -18,4 +18,8 @@ class Event extends Model
     {
         return $this->hasMany('App\Liste');
     }
+    public function members()
+    {
+        return $this->hasMany('App\Member');
+    }
 }

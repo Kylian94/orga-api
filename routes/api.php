@@ -34,11 +34,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_liste/{id}', 'ListeController@edit_liste');
     Route::post('/delete_liste/{id}', 'ListeController@destroy');
 
-
     Route::post('/{id}/create_item', 'ItemController@store');
     Route::post('/edit_item/{id}', 'ItemController@edit_item');
     Route::post('/delete_item/{id}', 'ItemController@destroy');
 
+    Route::get('/friends', 'FriendController@show');
+    Route::post('/add_friend/{id}', 'FriendController@create');
+    Route::post('/accept_friend', 'FriendController@update');
+    Route::post('/delete_friend', 'FriendController@destroy');
+
+    Route::get('/{id}/members', 'MemberController@show');
+    Route::post('/add_members', 'MemberController@create');
+    Route::post('/{id}/accept', 'MemberController@update');
+    Route::post('/{id}/delete_member/{id}', 'MemberController@destroy');
 
     Route::get('/logout', 'UserController@logout');
 });
