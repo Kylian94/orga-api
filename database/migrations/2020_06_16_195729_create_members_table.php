@@ -15,6 +15,9 @@ class CreateMembersTable extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('event_id');
+            $table->boolean('is_accepted')->default(0);
             $table->timestamps();
         });
     }
