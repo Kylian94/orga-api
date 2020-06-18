@@ -42,9 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Event');
     }
-    public function members()
+    public function events_member()
     {
-        return $this->hasMany('App\Member');
+        return $this->belongsToMany('App\Event');
     }
 
     public function items()

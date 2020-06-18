@@ -17,24 +17,12 @@ class EventController extends Controller
     public function index()
     {
 
-        $events_creator = Event::withCount('members_accepted')->where('user_id', Auth::user()->id)->get();
-
-        foreach ($events_creator as $event) {
-            $nb_members = $event->members_accepted_count;
-            $author = $event->user;
-        }
-
-        $events_member_of = Member::where('user_id', Auth::user()->id)->get();
-
-
-
-
-        //$merged = (object) array_merge((array) $event, (array) $events_creator);
+        $events = Auth::user()->events_member;
 
         return response()->json([
             'status_code' => 200,
             'message' => 'Your Event list',
-            'events' => $events_member_of,
+            'events' => $events,
         ]);
     }
 
@@ -44,9 +32,7 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
-    }
+    { }
 
     /**
      * Store a newly created resource in storage.
@@ -100,8 +86,11 @@ class EventController extends Controller
             $event = Event::find($id);
             $user = $event->user;
 
-            foreach ($event->members_accepted as $member) {
-                $member->user;
+            foreach ($event->users_accepted as $user) {
+                $user->user;
+            }
+            foreach ($event->users_pending as $user) {
+                $user->user;
             }
 
             $listes = $event->listes;
