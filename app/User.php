@@ -91,8 +91,8 @@ class User extends Authenticatable
     public function friendsAccepted()
     {
         return $this->belongsToMany('App\User', 'friends', 'user_id', 'friend_id')
-            ->wherePivot('is_accepted', '=', 1);
-        //->withPivot('is_accepted');
+            ->wherePivot('is_accepted', '=', 1)
+            ->withPivot('is_accepted');
     }
 
     function friendsOfMineAccepted()
@@ -114,15 +114,16 @@ class User extends Authenticatable
         if (!array_key_exists('friendsAccepted', $this->relations)) $this->loadFriendsAccepted();
         return $this->getRelation('friendsAccepted');
     }
+
+    protected function mergeFriendsAccepted()
+    {
+        return $this->friendsOfMineAccepted->merge($this->friendOfAccepted);
+    }
     protected function loadFriendsAccepted()
     {
         if (!array_key_exists('friendsAccepted', $this->relations)) {
             $friendsAccepted = $this->mergeFriendsAccepted();
             $this->setRelation('friendsAccepted', $friendsAccepted);
         }
-    }
-    protected function mergeFriendsAccepted()
-    {
-        return $this->friendsOfMineAccepted->merge($this->friendOfAccepted);
     }
 }
