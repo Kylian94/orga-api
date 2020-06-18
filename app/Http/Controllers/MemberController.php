@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Event;
 use App\Member;
+use App\User;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
@@ -44,9 +46,41 @@ class MemberController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function show(Member $member)
+    public function show($id)
     {
-        //
+        try {
+            $event = Event::find($id);
+            if ($event) {
+                $members_accepted = $event->members_accepted;
+                $members_pending = $event->members_pending;
+
+                foreach ($members_pending as $member_pending) {
+                    $member_pending->user;
+                }
+
+                foreach ($members_accepted as $member_accepted) {
+                    $member_accepted->user;
+                }
+
+                return response()->json([
+                    'status_code' => 200,
+                    'members_valid' => $members_accepted ?? "",
+                    'members_wait' => $members_pending ?? "",
+                    'message' => 'success'
+                ]);
+            } else {
+                return response()->json([
+                    'status_code' => 404,
+                    'message' => 'Error event not found',
+                ]);
+            }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Error found friends',
+                'error' => $error,
+            ]);
+        }
     }
 
     /**

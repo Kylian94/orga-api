@@ -18,8 +18,12 @@ class Event extends Model
     {
         return $this->hasMany('App\Liste');
     }
-    public function members()
+    public function members_accepted()
     {
-        return $this->hasMany('App\Member');
+        return $this->hasMany('App\Member')->where('is_accepted', '=', 1);;
+    }
+    public function members_pending()
+    {
+        return $this->hasMany('App\Member')->where('is_accepted', '=', 0);;
     }
 }
