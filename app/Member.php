@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model
 {
-    public function event()
+    public function events()
     {
         return $this->belongsTo('App\Event');
     }

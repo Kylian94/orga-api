@@ -9,7 +9,6 @@ class Event extends Model
     protected $fillable = [
         'title', 'isPrivate', 'adresse', 'zipCode', 'city', 'banner', 'date',
     ];
-
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -20,10 +19,10 @@ class Event extends Model
     }
     public function members_accepted()
     {
-        return $this->hasMany('App\Member')->where('is_accepted', '=', 1);;
+        return $this->belongsToMany('App\User')->where('is_accepted', '=', 1);
     }
     public function members_pending()
     {
-        return $this->hasMany('App\Member')->where('is_accepted', '=', 0);;
+        return $this->belongsToMany('App\User')->where('is_accepted', '=', 0);
     }
 }

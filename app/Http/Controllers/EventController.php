@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Event;
+use App\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,25 +16,25 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Auth::user()->events;
 
-        foreach ($events as $event) {
+        $events_creator = Event::withCount('members_accepted')->where('user_id', Auth::user()->id)->get();
+
+        foreach ($events_creator as $event) {
+            $nb_members = $event->members_accepted_count;
             $author = $event->user;
-            $members = $event->members;
-            $listes = $event->listes;
-        }
-        foreach ($listes as $liste) {
-            $items = $liste->items;
         }
 
+        $events_member_of = Member::where('user_id', Auth::user()->id)->get();
+
+
+
+
+        //$merged = (object) array_merge((array) $event, (array) $events_creator);
 
         return response()->json([
             'status_code' => 200,
             'message' => 'Your Event list',
-            'events' => $events,
-
-
-
+            'events' => $events_member_of,
         ]);
     }
 
@@ -98,7 +99,11 @@ class EventController extends Controller
         try {
             $event = Event::find($id);
             $user = $event->user;
-            $members = $event->members;
+
+            foreach ($event->members_accepted as $member) {
+                $member->user;
+            }
+
             $listes = $event->listes;
 
             foreach ($listes as $liste) {
@@ -108,8 +113,6 @@ class EventController extends Controller
                 'status_code' => 200,
                 'message' => 'Your list',
                 'event' => $event,
-
-
             ]);
         } catch (Exception $error) {
             return response()->json([
@@ -128,10 +131,9 @@ class EventController extends Controller
      */
     public function edit_event(Request $request, $id)
     {
-
         try {
             $event = Event::find($id);
-            //tdd($event);
+
             if ($event->user_id == Auth::user()->id) {
                 $result = $event->update($request->all());
                 if ($result) {
@@ -170,7 +172,7 @@ class EventController extends Controller
     {
         try {
             $event = Event::find($id);
-            //tdd($event);
+
             if ($event->user_id == Auth::user()->id) {
 
                 $listes = $event->listes;

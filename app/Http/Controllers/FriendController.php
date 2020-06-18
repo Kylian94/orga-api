@@ -38,7 +38,6 @@ class FriendController extends Controller
     public function store($id)
     {
         try {
-
             $userSearch = User::find($id);
 
             if (!$userSearch) {
@@ -57,7 +56,6 @@ class FriendController extends Controller
                 return response()->json([
                     'status_code' => 200,
                     'user' => Auth::user(),
-
                     'message' => 'success'
                 ]);
             }
@@ -98,7 +96,6 @@ class FriendController extends Controller
     public function pending(Friend $friend)
     {
         try {
-
             $friends = Auth::user()->friendsOfMine;
             return response()->json([
                 'status_code' => 200,
@@ -187,7 +184,6 @@ class FriendController extends Controller
     public function destroy($id)
     {
         try {
-
             $result = Friend::where('friend_id', $id)->first();
             $second_result = Friend::where('user_id', $id)->first();
 

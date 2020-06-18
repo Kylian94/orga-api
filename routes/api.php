@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_friend/{id}', 'FriendController@destroy');
 
     Route::get('/{id}/members', 'MemberController@show');
+
     Route::post('/add_members', 'MemberController@store');
     Route::post('/{id}/accept', 'MemberController@accept_member');
     Route::post('/{id}/delete_member/{id}', 'MemberController@destroy');
