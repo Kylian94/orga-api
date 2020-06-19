@@ -51,8 +51,8 @@ class MemberController extends Controller
         try {
             $event = Event::find($id);
             if ($event) {
-                $members_accepted = $event->members_accepted;
-                $members_pending = $event->members_pending;
+                $members_accepted = $event->users_accepted;
+                $members_pending = $event->users_pending;
 
                 foreach ($members_pending as $member_pending) {
                     $member_pending->user;

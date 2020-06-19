@@ -19,6 +19,10 @@ class EventController extends Controller
 
         $events = Auth::user()->events_member;
 
+        foreach ($events as $event) {
+            $event->setAttribute('nb_members', count($event->users_accepted));
+        }
+
         return response()->json([
             'status_code' => 200,
             'message' => 'Your Event list',
