@@ -174,6 +174,31 @@ class FriendController extends Controller
             ]);
         }
     }
+    public function search(Request $request)
+    {
+        try {
+            $users = User::where('firstname', 'LIKE', '%' . $request->search . '%')->orWhere('lastname', 'LIKE', '%' . $request->search . '%')->get();
+
+            if ($users) {
+                return response()->json([
+                    'status_code' => 200,
+                    'users' => $users,
+                    'message' => 'users founded'
+                ]);
+            } else {
+                return response()->json([
+                    'status_code' => 404,
+                    'message' => 'users not found'
+                ]);
+            }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Error found friends',
+                'error' => $error,
+            ]);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
