@@ -6,6 +6,8 @@ use App\Event;
 use App\Member;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
 {
@@ -83,6 +85,59 @@ class MemberController extends Controller
         }
     }
 
+    public function accept_event($id)
+    {
+        $event = Event::find($id);
+
+        if ($event) {
+            $member = $event->users()->where('user_id', Auth::user()->id)->first();
+
+            if ($member) {
+                DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $id)->update(['is_accepted' => 1]);
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => 'success user accept',
+                ]);
+            } else {
+                return response()->json([
+                    'status_code' => 404,
+                    'message' => 'User not invited',
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status_code' => 404,
+                'message' => 'Event not found',
+            ]);
+        }
+    }
+    public function cancel_event($id)
+    {
+        $event = Event::find($id);
+
+        if ($event) {
+            $member = $event->users()->where('user_id', Auth::user()->id)->first();
+
+            if ($member) {
+                DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $id)->delete();
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => 'cancel invit success',
+                ]);
+            } else {
+                return response()->json([
+                    'status_code' => 404,
+                    'message' => 'User not invited',
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status_code' => 404,
+                'message' => 'Event not found',
+            ]);
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -112,8 +167,30 @@ class MemberController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Member $member)
+    public function destroy($id, $member_id)
     {
-        //
+        $event = Event::find($id);
+
+        if ($event->user_id == Auth::user()->id) {
+            $member = $event->users()->where('user_id', $member_id)->first();
+
+            if ($member) {
+                DB::table('event_user')->where('user_id', $member_id)->where('event_id', $id)->delete();
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => 'delete invit success',
+                ]);
+            } else {
+                return response()->json([
+                    'status_code' => 404,
+                    'message' => 'User not invited',
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status_code' => 404,
+                'message' => 'Not autorized',
+            ]);
+        }
     }
 }
