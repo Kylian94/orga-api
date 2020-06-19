@@ -30,27 +30,27 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_event/{id}', 'EventController@destroy');
 
     Route::get('/listes/{id}', 'ListeController@show');
-    Route::post('/{id}/create_liste', 'ListeController@store');
+    Route::post('/{event_id}/create_liste', 'ListeController@store');
     Route::post('/edit_liste/{id}', 'ListeController@edit_liste');
     Route::post('/delete_liste/{id}', 'ListeController@destroy');
 
-    Route::post('/{id}/create_item', 'ItemController@store');
+    Route::post('/{liste_id}/create_item', 'ItemController@store');
     Route::post('/edit_item/{id}', 'ItemController@edit_item');
     Route::post('/delete_item/{id}', 'ItemController@destroy');
 
     Route::get('/friends', 'FriendController@show');
     Route::get('/friends_pending', 'FriendController@pending');
     Route::get('/friends_request', 'FriendController@request');
-    Route::post('/add_friend/{id}', 'FriendController@store');
-    Route::post('/accept_friend/{id}', 'FriendController@accept_friend');
-    Route::post('/delete_friend/{id}', 'FriendController@destroy');
+    Route::post('/add_friend/{user_id}', 'FriendController@store');
+    Route::post('/accept_friend/{user_id}', 'FriendController@accept_friend');
+    Route::post('/delete_friend/{user_id}', 'FriendController@destroy');
 
-    Route::get('/{id}/members', 'MemberController@show');
+    Route::get('/{event_id}/members', 'MemberController@show');
 
     Route::post('/add_members', 'MemberController@store');
-    Route::post('/{id}/accept_event', 'MemberController@accept_event');
-    Route::post('/{id}/cancel_event', 'MemberController@cancel_event');
-    Route::post('/{id}/delete_member/{member_id}', 'MemberController@destroy');
+    Route::post('/{event_id}/accept_event', 'MemberController@accept_event');
+    Route::post('/{event_id}/cancel_event', 'MemberController@cancel_event');
+    Route::post('/{event_id}/delete_member/{member_id}', 'MemberController@destroy');
 
     Route::get('/logout', 'UserController@logout');
 });

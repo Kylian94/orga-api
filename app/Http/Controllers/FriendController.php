@@ -35,10 +35,10 @@ class FriendController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($id)
+    public function store($user_id)
     {
         try {
-            $userSearch = User::find($id);
+            $userSearch = User::find($user_id);
 
             if (!$userSearch) {
                 return response()->json([
@@ -48,7 +48,7 @@ class FriendController extends Controller
             } else {
                 $friend = new Friend;
                 $friend->user_id = Auth::user()->id;
-                $friend->friend_id = $id;
+                $friend->friend_id = $user_id;
                 $friend->is_accepted = 0;
                 $friend->save();
                 Auth::user()->friends;
@@ -146,14 +146,14 @@ class FriendController extends Controller
      * @param  \App\Friend  $friend
      * @return \Illuminate\Http\Response
      */
-    public function accept_friend($id)
+    public function accept_friend($user_id)
     {
         try {
 
-            $result = Friend::where('user_id', $id)->first();
+            $result = Friend::where('user_id', $user_id)->first();
 
             if ($result) {
-                Friend::where('friend_id', Auth::user()->id)->where('user_id', $id)->update(['is_accepted' => 1]);
+                Friend::where('friend_id', Auth::user()->id)->where('user_id', $user_id)->update(['is_accepted' => 1]);
                 return response()->json([
                     'status_code' => 200,
                     'user' => Auth::user(),
@@ -181,15 +181,15 @@ class FriendController extends Controller
      * @param  \App\Friend  $friend
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($user_id)
     {
         try {
-            $result = Friend::where('friend_id', $id)->first();
-            $second_result = Friend::where('user_id', $id)->first();
+            $result = Friend::where('friend_id', $user_id)->first();
+            $second_result = Friend::where('user_id', $user_id)->first();
 
             if ($result || $second_result) {
-                Friend::where('friend_id', $id)->where('user_id', Auth::user()->id)->delete();
-                Friend::where('friend_id', Auth::user()->id)->where('user_id', $id)->delete();
+                Friend::where('friend_id', $user_id)->where('user_id', Auth::user()->id)->delete();
+                Friend::where('friend_id', Auth::user()->id)->where('user_id', $user_id)->delete();
 
                 return response()->json([
                     'status_code' => 200,

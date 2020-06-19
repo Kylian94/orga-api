@@ -35,7 +35,7 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request, $liste_id)
     {
         try {
             $request->validate([
@@ -44,7 +44,7 @@ class ItemController extends Controller
 
             $item = new Item;
             $item->title = $request->title;
-            $item->liste_id = $id;
+            $item->liste_id = $liste_id;
             $item->author_id = Auth::user()->id;
             $item->save();
             $user = Auth::user();
@@ -52,7 +52,7 @@ class ItemController extends Controller
 
             return response()->json([
                 'status_code' => 200,
-                'liste' => Liste::find($id),
+                'liste' => Liste::find($liste_id),
                 'item' => $item,
                 'message' => 'success'
             ]);

@@ -33,7 +33,7 @@ class ListeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request, $event_id)
     {
         try {
             $request->validate([
@@ -42,12 +42,12 @@ class ListeController extends Controller
 
             $liste = new Liste;
             $liste->title = $request->title;
-            $liste->event_id = $id;
+            $liste->event_id = $event_id;
             $liste->save();
 
             return response()->json([
                 'status_code' => 200,
-                'event' => Event::find($id),
+                'event' => Event::find($event_id),
                 'liste' => $liste,
                 'message' => 'success'
             ]);

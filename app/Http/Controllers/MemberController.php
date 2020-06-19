@@ -48,10 +48,10 @@ class MemberController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($event_id)
     {
         try {
-            $event = Event::find($id);
+            $event = Event::find($event_id);
             if ($event) {
                 $members_accepted = $event->users_accepted;
                 $members_pending = $event->users_pending;
@@ -85,15 +85,15 @@ class MemberController extends Controller
         }
     }
 
-    public function accept_event($id)
+    public function accept_event($event_id)
     {
-        $event = Event::find($id);
+        $event = Event::find($event_id);
 
         if ($event) {
             $member = $event->users()->where('user_id', Auth::user()->id)->first();
 
             if ($member) {
-                DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $id)->update(['is_accepted' => 1]);
+                DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $event_id)->update(['is_accepted' => 1]);
                 return response()->json([
                     'status_code' => 200,
                     'message' => 'success user accept',
@@ -111,15 +111,15 @@ class MemberController extends Controller
             ]);
         }
     }
-    public function cancel_event($id)
+    public function cancel_event($event_id)
     {
-        $event = Event::find($id);
+        $event = Event::find($event_id);
 
         if ($event) {
             $member = $event->users()->where('user_id', Auth::user()->id)->first();
 
             if ($member) {
-                DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $id)->delete();
+                DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $event_id)->delete();
                 return response()->json([
                     'status_code' => 200,
                     'message' => 'cancel invit success',
@@ -167,15 +167,15 @@ class MemberController extends Controller
      * @param  \App\Member  $member
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, $member_id)
+    public function destroy($event_id, $member_id)
     {
-        $event = Event::find($id);
+        $event = Event::find($event_id);
 
         if ($event->user_id == Auth::user()->id) {
             $member = $event->users()->where('user_id', $member_id)->first();
 
             if ($member) {
-                DB::table('event_user')->where('user_id', $member_id)->where('event_id', $id)->delete();
+                DB::table('event_user')->where('user_id', $member_id)->where('event_id', $event_id)->delete();
                 return response()->json([
                     'status_code' => 200,
                     'message' => 'delete invit success',
