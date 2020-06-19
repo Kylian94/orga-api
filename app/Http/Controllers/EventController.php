@@ -64,6 +64,8 @@ class EventController extends Controller
             $event->city = $request->city;
             $event->user_id = Auth::user()->id;
             $event->save();
+            $user = Auth::user();
+            $user->events_member()->attach($event->id, array('is_accepted' => 1));
 
             return response()->json([
                 'status_code' => 200,
