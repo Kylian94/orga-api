@@ -6,6 +6,7 @@ use App\Event;
 use App\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -17,17 +18,31 @@ class EventController extends Controller
     public function index()
     {
 
-        $events = Auth::user()->events_member;
-
-        foreach ($events as $event) {
-            $event->setAttribute('nb_members', count($event->users_accepted));
-        }
-
+        $events = Event::all();
         return response()->json([
             'status_code' => 200,
             'message' => 'Your Event list',
             'events' => $events,
         ]);
+        // if (Auth::user()) {
+        //     $events = Auth::user()->events_member;
+
+        //     foreach ($events as $event) {
+        //         $event->setAttribute('nb_members', count($event->users_accepted));
+        //     }
+
+        //     $events = Event::all();
+        //     return response()->json([
+        //         'status_code' => 200,
+        //         'message' => 'Your Event list',
+        //         'events' => $events,
+        //     ]);
+        // } else {
+        //     return response()->json([
+        //         'status_code' => 403,
+        //         'message' => 'not connected',
+        //     ]);
+        // }
     }
 
     /**
@@ -66,6 +81,20 @@ class EventController extends Controller
             $event->save();
             $user = Auth::user();
             $user->events_member()->attach($event->id, array('is_accepted' => 1));
+
+            $lastInsert = Event::find($event->id);
+
+            if ($request->members) {
+                $members = array_keys($request->members);
+                dd($members);
+                foreach ($members as $member) {
+                    DB::table("event_user")->insert([
+                        ['user_id' => $member],
+                        ['event_id' => $lastInsert->id],
+
+                    ]);
+                }
+            }
 
             return response()->json([
                 'status_code' => 200,

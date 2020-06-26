@@ -44,6 +44,34 @@ class UserController extends Controller
         }
     }
 
+    public function logout()
+    {
+
+        try {
+            $user = Auth::user();
+            $result = $user->tokens()->where('tokenable_id', $user->id)->delete();
+
+
+            if (!$result) {
+                return response()->json([
+                    "message" => "Error with delete",
+                    "status_code" => 400
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "Disconnected ",
+                    "status_code" => 200
+                ]);
+            }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Cannot delete user',
+                'error' => $error,
+            ]);
+        }
+    }
+
 
 
     public function destroy()

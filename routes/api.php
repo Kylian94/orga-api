@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', 'AuthController@login');
 Route::post('/register', 'AuthController@register');
+Route::get('/events', 'EventController@index');
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -23,7 +24,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/delete_account', 'UserController@destroy');
     Route::post('/edit_account', 'UserController@edit_account');
 
-    Route::get('/events', 'EventController@index');
+
     Route::get('/events/{id}', 'EventController@show');
     Route::post('/create_event', 'EventController@store');
     Route::post('/edit_event/{id}', 'EventController@edit_event');
@@ -47,13 +48,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_friend/{user_id}', 'FriendController@destroy');
 
     Route::get('/{event_id}/members', 'MemberController@show');
-
     Route::post('/add_members', 'MemberController@store');
     Route::post('/{event_id}/accept_event', 'MemberController@accept_event');
     Route::post('/{event_id}/cancel_event', 'MemberController@cancel_event');
     Route::post('/{event_id}/delete_member/{member_id}', 'MemberController@destroy');
 
-    Route::get('/logout', 'UserController@logout');
+    Route::post('/logout', 'UserController@logout');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
