@@ -117,7 +117,7 @@ class FriendController extends Controller
             return response([
                 'status_code' => 200,
                 'user' => Auth::user(),
-                'message' => 'success'
+                'message' => 'success',
             ], 200);
         } catch (Exception $error) {
             return response([

@@ -37,9 +37,26 @@ class MemberController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($friend_id, $event_id)
+
     {
-        //
+
+        $result = DB::table("event_user")->insert([
+            [
+                'user_id' => $friend_id,
+                'event_id' => $event_id
+            ]
+        ]);
+        if ($result) {
+            return response([
+                'message' => "success",
+            ], 200);
+        } else {
+            return response([
+                'status_code' => 500,
+                'message' => 'Error add friends',
+            ], 500);
+        }
     }
 
     /**

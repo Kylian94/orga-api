@@ -94,7 +94,7 @@ class ItemController extends Controller
         if ($result) {
             return response([
                 'item' => $item,
-            ]);
+            ], 200);
         } else {
             return response([
                 'status_code' => 500,

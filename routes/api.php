@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_friend/{user_id}', 'FriendController@destroy');
 
     Route::get('/{event_id}/members', 'MemberController@show');
-    Route::post('/add_members', 'MemberController@store');
+    Route::post('/{event_id}/add_members/{friend_id}', 'MemberController@store');
     Route::post('/{event_id}/accept_event', 'MemberController@accept_event');
     Route::post('/{event_id}/cancel_event', 'MemberController@cancel_event');
     Route::post('/{event_id}/delete_member/{member_id}', 'MemberController@destroy');
