@@ -6,6 +6,7 @@ use App\Item;
 use App\Liste;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -41,7 +42,6 @@ class ItemController extends Controller
             $request->validate([
                 'title' => 'required',
             ]);
-
             $item = new Item;
             $item->title = $request->title;
             $item->liste_id = $liste_id;
@@ -49,19 +49,18 @@ class ItemController extends Controller
             $item->save();
             $user = Auth::user();
             $user->items()->attach($item->id);
-
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'liste' => Liste::find($liste_id),
                 'item' => $item,
                 'message' => 'success'
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error create liste',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -82,9 +81,26 @@ class ItemController extends Controller
      * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function edit(Item $item)
+    public function edit_item($id)
     {
-        //
+        $item = Item::find($id);
+        $user = Auth::user();
+        $result = DB::table("item_user")->insert([
+            [
+                'user_id' => $user->id,
+                'item_id' => $id
+            ]
+        ]);
+        if ($result) {
+            return response([
+                'item' => $item,
+            ]);
+        } else {
+            return response([
+                'status_code' => 500,
+                'message' => 'Error create liste',
+            ], 500);
+        }
     }
 
     /**
@@ -113,22 +129,22 @@ class ItemController extends Controller
         if ($user->id == $item->author_id) {
             $result = $item->delete();
             if ($result) {
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'message' => 'success delete',
                     'item' => $item,
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 500,
                     'message' => 'error delete',
-                ]);
+                ], 500);
             }
         } else {
-            return response()->json([
+            return response([
                 'status_code' => 422,
                 'message' => 'not autorized',
-            ]);
+            ], 422);
         }
     }
 }

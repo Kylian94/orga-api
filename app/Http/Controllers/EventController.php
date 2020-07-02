@@ -18,31 +18,27 @@ class EventController extends Controller
     public function index()
     {
 
-        $events = Event::all();
-        return response()->json([
-            'status_code' => 200,
-            'message' => 'Your Event list',
-            'events' => $events,
-        ]);
-        // if (Auth::user()) {
-        //     $events = Auth::user()->events_member;
 
-        //     foreach ($events as $event) {
-        //         $event->setAttribute('nb_members', count($event->users_accepted));
-        //     }
+        if (Auth::user()) {
+            $events = Auth::user()->events_member;
+            if ($events) {
 
-        //     $events = Event::all();
-        //     return response()->json([
-        //         'status_code' => 200,
-        //         'message' => 'Your Event list',
-        //         'events' => $events,
-        //     ]);
-        // } else {
-        //     return response()->json([
-        //         'status_code' => 403,
-        //         'message' => 'not connected',
-        //     ]);
-        // }
+                foreach ($events as $event) {
+                    $event->setAttribute('nb_members', count($event->users_accepted));
+                }
+                //$events = Event::all();
+                return response([
+                    'status_code' => 200,
+                    'message' => 'Your Event list',
+                    'events' => $events,
+                ], 200);
+            }
+        } else {
+            return response([
+                'status_code' => 403,
+                'message' => 'not connected',
+            ], 403);
+        }
     }
 
     /**
@@ -96,16 +92,16 @@ class EventController extends Controller
                 }
             }
 
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'event' => $event
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error create event',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -133,17 +129,17 @@ class EventController extends Controller
             foreach ($listes as $liste) {
                 $items = $liste->items;
             }
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'message' => 'Your list',
                 'event' => $event,
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error view event',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -153,36 +149,27 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function edit_event(Request $request, $id)
+    public function edit_item($id)
     {
-        try {
-            $event = Event::find($id);
+        $item = Item::find($id);
+        $user = Auth::user();
+        $result = DB::table("item_user")->insert([
+            [
+                'user_id' => $user->id,
+                'item_id' => $id
+            ]
 
-            if ($event->user_id == Auth::user()->id) {
-                $result = $event->update($request->all());
-                if ($result) {
-                    return response()->json([
-                        'message' => "event updated",
-                        'status_code' => 200
-                    ]);
-                } else {
-                    return response()->json([
-                        'message' => "event not updated",
-                        'status_code' => 400
-                    ]);
-                }
-            } else {
-                return response()->json([
-                    'message' => "not autorized",
-                    'status_code' => 422
-                ]);
-            }
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 500,
-                'message' => 'Cannot edit event',
-                'error' => $error,
+        ]);
+        if ($result) {
+            return response([
+                'item' => $item,
             ]);
+        } else {
+            return response([
+                'status_code' => 500,
+                'message' => 'Error create liste',
+
+            ], 500);
         }
     }
 
@@ -212,22 +199,22 @@ class EventController extends Controller
                 }
                 $event->delete();
 
-                return response()->json([
+                return response([
                     'message' => "event deleted",
                     'status_code' => 200
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'message' => "not autorized",
                     'status_code' => 422
-                ]);
+                ], 422);
             }
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Cannot delete event',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 }

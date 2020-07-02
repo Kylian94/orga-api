@@ -16,9 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', 'AuthController@login');
 Route::post('/register', 'AuthController@register');
-Route::get('/events', 'EventController@index');
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::get('/events', 'EventController@index');
 
     Route::get('/account', 'UserController@profile');
     Route::get('/delete_account', 'UserController@destroy');

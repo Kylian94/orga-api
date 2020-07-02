@@ -18,10 +18,10 @@ class AuthController extends Controller
             ]);
             $credentials = request(['email', 'password']);
             if (!Auth::attempt($credentials)) {
-                return response()->json([
+                return response([
                     'status_code' => 422,
                     'message' => 'Email or password error'
-                ]);
+                ], 422);
             }
             $user = User::all()->where('email', $request->email)->first();
 
@@ -31,18 +31,18 @@ class AuthController extends Controller
                 throw new \Exception('Error in Login');
             }
             $tokenResult = $user->createToken('authToken')->plainTextToken;
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'access_token' => $tokenResult,
                 'state' => 'connected',
                 'token_type' => 'Bearer',
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error in Login',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -57,10 +57,10 @@ class AuthController extends Controller
             ]);
             $user = User::all()->where('email', $request->email)->first();
             if ($user) {
-                return response()->json([
+                return response([
                     'status_code' => 422,
                     'message' => 'Email already exists',
-                ]);
+                ], 422);
             }
             $user = new User;
             $user->firstname = $request->firstname;
@@ -71,30 +71,30 @@ class AuthController extends Controller
 
             $user = User::all()->where('email', $request->email)->first();
             $tokenResult = $user->createToken('authToken')->plainTextToken;
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error in Register',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
     public function logout()
     {
         Auth::logout();
-        return response()->json(['message' => 'Logged Out'], 200);
+        return response(['message' => 'Logged Out'], 200);
     }
 
     public function test()
     {
-        return response()->json([
+        return response([
             'status_code' => 200,
             'message' => 'success',
-        ]);
+        ], 200);
     }
 }

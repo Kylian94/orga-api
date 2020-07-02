@@ -64,24 +64,24 @@ class MemberController extends Controller
                     $member_accepted->user;
                 }
 
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'members_valid' => $members_accepted ?? "",
                     'members_wait' => $members_pending ?? "",
                     'message' => 'success'
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'message' => 'Error event not found',
-                ]);
+                ], 404);
             }
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error found friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -94,21 +94,21 @@ class MemberController extends Controller
 
             if ($member) {
                 DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $event_id)->update(['is_accepted' => 1]);
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'message' => 'success user accept',
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'message' => 'User not invited',
-                ]);
+                ], 404);
             }
         } else {
-            return response()->json([
+            return response([
                 'status_code' => 404,
                 'message' => 'Event not found',
-            ]);
+            ], 404);
         }
     }
     public function cancel_event($event_id)
@@ -120,21 +120,21 @@ class MemberController extends Controller
 
             if ($member) {
                 DB::table('event_user')->where('user_id', Auth::user()->id)->where('event_id', $event_id)->delete();
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'message' => 'cancel invit success',
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'message' => 'User not invited',
-                ]);
+                ], 404);
             }
         } else {
-            return response()->json([
+            return response([
                 'status_code' => 404,
                 'message' => 'Event not found',
-            ]);
+            ], 404);
         }
     }
 
@@ -176,21 +176,21 @@ class MemberController extends Controller
 
             if ($member) {
                 DB::table('event_user')->where('user_id', $member_id)->where('event_id', $event_id)->delete();
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'message' => 'delete invit success',
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'message' => 'User not invited',
-                ]);
+                ], 404);
             }
         } else {
-            return response()->json([
+            return response([
                 'status_code' => 404,
                 'message' => 'Not autorized',
-            ]);
+            ], 404);
         }
     }
 }

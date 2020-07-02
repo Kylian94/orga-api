@@ -39,24 +39,23 @@ class ListeController extends Controller
             $request->validate([
                 'title' => 'required',
             ]);
-
             $liste = new Liste;
             $liste->title = $request->title;
             $liste->event_id = $event_id;
             $liste->save();
 
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'event' => Event::find($event_id),
                 'liste' => $liste,
                 'message' => 'success'
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error create liste',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -69,25 +68,22 @@ class ListeController extends Controller
     public function show($id)
     {
         try {
-
             $liste = Liste::find($id);
             $items = $liste->items;
             foreach ($items as $item) {
                 $users =  $item->users;
             }
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'message' => 'success',
                 'liste' => $liste,
-
-
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error create liste',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -100,30 +96,28 @@ class ListeController extends Controller
     public function edit_liste(Request $request, $id)
     {
         try {
-
             $liste = Liste::find($id);
             $user = Auth::user();
             $event = $liste->event;
             if ($user->id == $event->user_id) {
                 $liste->update($request->all());
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'message' => 'success',
                     'liste' => $liste,
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 422,
                     'message' => 'not autorized',
-
-                ]);
+                ], 422);
             }
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error create liste',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -153,22 +147,22 @@ class ListeController extends Controller
         if ($user->id == $event->user_id) {
             $result = $liste->delete();
             if ($result) {
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'message' => 'success',
                     'liste' => $liste,
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 500,
                     'message' => 'error delete',
-                ]);
+                ], 500);
             }
         } else {
-            return response()->json([
+            return response([
                 'status_code' => 422,
                 'message' => 'not autorized',
-            ]);
+            ], 422);
         }
     }
 }

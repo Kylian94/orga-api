@@ -41,10 +41,10 @@ class FriendController extends Controller
             $userSearch = User::find($user_id);
 
             if (!$userSearch) {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'message' => 'error user not founded'
-                ]);
+                ], 404);
             } else {
                 $friend = new Friend;
                 $friend->user_id = Auth::user()->id;
@@ -53,18 +53,18 @@ class FriendController extends Controller
                 $friend->save();
                 Auth::user()->friends;
 
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'user' => Auth::user(),
                     'message' => 'success'
-                ]);
+                ], 200);
             }
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error add friend',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -79,52 +79,52 @@ class FriendController extends Controller
         try {
 
             $friends = collect([Auth::user()->friendOfAccepted, Auth::user()->friendsOfMineAccepted])->collapse()->all();
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'user' => Auth::user(),
                 'friends' => $friends,
                 'message' => 'success'
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error found friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
     public function pending(Friend $friend)
     {
         try {
             $friends = Auth::user()->friendsOfMine;
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'user' => Auth::user(),
                 'message' => 'success'
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error found friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
     public function request(Friend $friend)
     {
         try {
             $friends = Auth::user()->friendOf;
-            return response()->json([
+            return response([
                 'status_code' => 200,
                 'user' => Auth::user(),
                 'message' => 'success'
-            ]);
+            ], 200);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error found friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -154,24 +154,24 @@ class FriendController extends Controller
 
             if ($result) {
                 Friend::where('friend_id', Auth::user()->id)->where('user_id', $user_id)->update(['is_accepted' => 1]);
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'user' => Auth::user(),
                     'message' => 'friend accepted'
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'user' => Auth::user(),
                     'message' => 'friend not found'
-                ]);
+                ], 404);
             }
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error found friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
     public function search(Request $request)
@@ -180,23 +180,23 @@ class FriendController extends Controller
             $users = User::where('firstname', 'LIKE', '%' . $request->search . '%')->orWhere('lastname', 'LIKE', '%' . $request->search . '%')->get();
 
             if ($users) {
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'users' => $users,
                     'message' => 'users founded'
-                ]);
+                ], 200);
             } else {
-                return response()->json([
+                return response([
                     'status_code' => 404,
                     'message' => 'users not found'
-                ]);
+                ], 404);
             }
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error found friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 
@@ -216,23 +216,22 @@ class FriendController extends Controller
                 Friend::where('friend_id', $user_id)->where('user_id', Auth::user()->id)->delete();
                 Friend::where('friend_id', Auth::user()->id)->where('user_id', $user_id)->delete();
 
-                return response()->json([
+                return response([
                     'status_code' => 200,
                     'user' => Auth::user(),
                     'message' => 'success friend delete'
-                ]);
+                ], 200);
             }
-            return response()->json([
+            return response([
                 'status_code' => 404,
                 'message' => 'Error friend not found',
-
-            ]);
+            ], 404);
         } catch (Exception $error) {
-            return response()->json([
+            return response([
                 'status_code' => 500,
                 'message' => 'Error delete friends',
                 'error' => $error,
-            ]);
+            ], 500);
         }
     }
 }
